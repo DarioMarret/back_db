@@ -39,7 +39,7 @@ export async function CrearVenta(req, res) {
         Reporte.create({
             secuencia:secuencial,
             producto:tienda[index].producto,
-            precio_venta:tienda[index].cantidad,
+            precio_venta:tienda[index].precio_venta,
             cantidad:tienda[index].cantidad,
             fecha_creacion:fecha,
             empresa,
@@ -62,20 +62,47 @@ export async function CrearVenta(req, res) {
 
 export async function ActualizarEstado(req, res) {
     try {
-        const { estado, secuencia, empresa } = req.body
-        const response = await Reporte.update({ estado }, { where: { secuencia, empresa } });
-        console.log(response)
-        if (!empty(response[0])) {
-            res.json({
-                success: true,
-                data: response[0],
-                msg: 'reporte Actualizado'
-            })
-        }else{
-            res.json({success: false, msg:"no se pudo actualizar"})
+        const { editar, forma_pago, estado } = req.body
+        const { secuencia, empresa } = editar
+        if(!empty(forma_pago) && !empty(estado)){
+            const response = await Reporte.update({ estado, forma_pago }, { where: { secuencia, empresa } });
+            console.log(response)
+            if (!empty(response[0])) {
+                res.json({
+                    success: true,
+                    data: response[0],
+                    msg: 'reporte Actualizado'
+                })
+            }else{
+                res.json({success: false, msg:"no se pudo actualizar"})
+            }
+        }else if(!empty(estado)){
+            const response = await Reporte.update({ estado }, { where: { secuencia, empresa } });
+            console.log(response)
+            if (!empty(response[0])) {
+                res.json({
+                    success: true,
+                    data: response[0],
+                    msg: 'reporte Actualizado'
+                })
+            }else{
+                res.json({success: false, msg:"no se pudo actualizar"})
+            }
+        }else if(!empty(forma_pago)){
+            const response = await Reporte.update({ forma_pago }, { where: { secuencia, empresa } });
+            console.log(response)
+            if (!empty(response[0])) {
+                res.json({
+                    success: true,
+                    data: response[0],
+                    msg: 'reporte Actualizado'
+                })
+            }else{
+                res.json({success: false, msg:"no se pudo actualizar"})
+            }
         }
+
     } catch (error) {
         console.log("ActualizarEstado", error)
     }
 }
-

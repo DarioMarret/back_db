@@ -35,6 +35,10 @@ const Reporte = sequelize.define("reporte",{
       type: Sequelize.STRING(20),
       defaultValue: "ACTIVO",
     },
+    forma_pago:{
+      type: Sequelize.STRING(100),
+      defaultValue: "EFECTIVO",
+  },
   },
   {
     tableName:"reporte" ,
