@@ -31,7 +31,34 @@ export async function ListarReporte(req, res) {
     //     } 
     // })
 }
-
+export async function ListarReporteActual(req, res) {
+    // jwt.verify(req.token, config.token, async (error, authData)=>{
+    //     if(!error){
+    try {
+        const { empresa, fecha } = req.query
+        let sql = `SELECT secuencia, fecha_creacion, empresa, sum(precio_venta * cantidad) AS total, estado, forma_pago FROM esq_reporte.reporte  WHERE empresa = '${empresa}' AND fecha_creacion = '${fecha}' GROUP BY secuencia, empresa, fecha_creacion, estado, forma_pago`;
+        db.query(sql,{type: sequelize.QueryTypes.SELECT}).then((response)=>{
+            console.log("reporte",response);
+            if(!empty(response)){
+                res.json({
+                    success: true,
+                    data: response,
+                    msg:'reporte por fecha',
+                })
+            }else{
+                res.json({msg: "no se encontro reporte"})
+            }
+        }).catch((err)=>{
+            console.log("Error", err);
+        })
+    } catch (error) {
+        console.log("ListarReporte", error)
+    }
+    //     }else{
+    //         res.json(errorToken)
+    //     } 
+    // })
+}
 export async function CrearVenta(req, res) {
     const { empresa, tienda, secuencial, fecha } = req.body;
     var count = 0;
