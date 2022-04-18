@@ -74,7 +74,8 @@ async function LeerExcel(ruta, res, empresa) {
     var count = 0
     for (let index = 0; index < dataExcel.length; index++) {
         let producto = dataExcel[index].producto
-        var ress = await VerificarProductoExistente(empresa, producto.toLowerCase())
+        let precio = Math.round(((dataExcel[index].precio_venta) + Number.EPSILON) * 100) / 100
+        var ress = await VerificarProductoExistente(empresa, producto.toLowerCase(), precio)
         console.log(ress)
         if (!ress) {
             Productos.create({
@@ -86,7 +87,7 @@ async function LeerExcel(ruta, res, empresa) {
             })
             .then((response) => {
                 count += 1
-                console.log(response);
+                console.log("se guardo",response);
             }).catch((err) => {
                 console.log("error", err)
             });
@@ -104,14 +105,16 @@ async function LeerExcel(ruta, res, empresa) {
     })
 
 }
-async function VerificarProductoExistente(empresa, producto) {
-    const response = await Productos.findAll({ where: { empresa, producto }, attributes: ['producto'] })
-    console.log("VerificarProductoExistente",response)
-    if (!empty(response)) {
-        return true;
-    } else {
-        return false;
-    }
+async function VerificarProductoExistente(empresa, producto, precio) {
+    const response = await Productos.findAll({ where: { empresa, producto }, attributes: ['producto','precio_venta'] })
+        // let product = response[0].producto
+        // let preci = response[0].precio_venta
+        // console.log("VerificarProductoExistente",product, preci)
+        if (!empty(response)) {
+            return true;
+        } else {
+            return false;
+        }
 }
 export async function ListarProductoConsiDencia(req, res){
     // jwt.verify(req.token, config.token, async (error, authData)=>{

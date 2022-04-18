@@ -133,3 +133,46 @@ export async function ActualizarEstado(req, res) {
         console.log("ActualizarEstado", error)
     }
 }
+
+export async function SacarTotalesVentaFechas(req, res) {
+    try {
+        const { empresa, fecha_ini, fecha_fin, estado } = req.body;
+        let sql = `SELECT SUM(precio_venta * cantidad) AS tota_venta FROM esq_reporte.reporte WHERE empresa = '${empresa}' AND estado = '${estado}' AND fecha_creacion BETWEEN '${fecha_ini}' and '${fecha_fin}'`
+        db.query(sql,{type: sequelize.QueryTypes.SELECT}).then((response)=>{
+            console.log("SacarTotalesVentaFechas",response[0]);
+            if(!empty(response)){
+                res.json({
+                    success: true,
+                    data: response[0],
+                    msg:'SacarTotalesVentaFechas',
+                })
+            }else{
+                res.json({msg: "no se encontro reporte"})
+            }
+        }).catch((err)=>{
+            console.log("Error", err);
+        })
+    } catch (error) {
+        console.log("ListarReporte", error)
+    }
+}
+
+export async function SacarTotalesVenta(empresa, fecha_ini, fecha_fin, estado) {
+    try {
+        return new Promise(function (resolve, reject) {
+            let sql = `SELECT SUM(precio_venta * cantidad) AS total_venta FROM esq_reporte.reporte WHERE empresa = '${empresa}' AND estado = '${estado}' AND fecha_creacion BETWEEN '${fecha_ini}' and '${fecha_fin}'`
+            db.query(sql,{type: sequelize.QueryTypes.SELECT}).then((response)=>{
+                if(!empty(response)){
+                    console.log("SacarTotalesVentaFechas",response[0]);
+                    resolve(response[0])
+                }else{
+                    resolve(0)
+                }
+            }).catch((err)=>{
+                console.log("Error", err);
+            })
+        })
+    } catch (error) {
+        console.log("ListarReporte", error)
+    }
+}

@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { ActualizarEstado, ActualizarFormaPago, CrearVenta, ListarReporte, ListarReporteActual } from '../../controller/reporte/reporte'
+import { ActualizarEstado, CrearVenta, ListarReporte, ListarReporteActual, SacarTotalesVentaFechas } from '../../controller/reporte/reporte'
 
 const routes = Router()
 
@@ -8,7 +8,7 @@ routes.post('/listar_reporte_fechas',ListarReporte)
 routes.post('/crear_venta',CrearVenta)
 routes.get('/listar_reporte_venta_actual',ListarReporteActual)
 
-// routes.put('/acualizar_estado_forma_pago',ActualizarFormaPago)
+routes.post('/total_venta_fechas',SacarTotalesVentaFechas)
 
 
 export default routes
