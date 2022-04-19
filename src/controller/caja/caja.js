@@ -10,7 +10,7 @@ import Movimiento from "../../model/Caja/Movimiento";
 export async function ListarCajaActual(req, res) {
     try {
         const { empresa, fecha_ini, fecha_fin, estado } = req.body;
-        let sql = `SELECT * FROM esq_reporte.caja WHERE empresa = '${empresa}' AND estado = '${estado}' AND fecha_cuadre BETWEEN '${fecha_ini}' and '${fecha_fin}' ORDER BY id DESC`
+        let sql = `SELECT * FROM esq_reporte.caja WHERE empresa = '${empresa}' AND estado = '${estado}' AND fecha_cuadre BETWEEN '${fecha_ini}' and '${fecha_fin}' ORDER BY id DESC LIMIT 1 `
         db.query(sql,{type: sequelize.QueryTypes.SELECT}).then((response)=>{
             console.log("reporte",response);
             if(!empty(response)){
@@ -30,7 +30,6 @@ export async function ListarCajaActual(req, res) {
     }
 }
 export async function CrearCuadreCaja(req, res) {
-    //     if(!error){
     try {
         const { empresa, fecha_cuadre, usuario, estado, conteo } = req.body
         let fecha_ini = fecha_cuadre
@@ -39,33 +38,29 @@ export async function CrearCuadreCaja(req, res) {
         console.log("CrearCuadreCaja", parseFloat(respuesta.total_venta))
         var totalventa = respuesta.total_venta !=null ? parseFloat(respuesta.total_venta) : 0
         const {ingreso, salida} = await TotalMovimientos(empresa,fecha_cuadre,estado)
+        var venta = respuesta.total_venta !=null ? parseFloat(respuesta.total_venta) : 0
         totalventa += ingreso != null ? parseFloat(ingreso) : 0
         totalventa -= salida != null ? parseFloat(salida) : 0
         const { cuadre_ini, cuadre_fin, cuadre_total } = await CuadreIni(empresa, estado)
         console.log("ini:",cuadre_ini, "fin:",cuadre_fin, "total:",cuadre_total)
         if(cuadre_ini == 0){
-            await Caja.create({fecha_cuadre, usuario, conteo_ini:conteo, cuadre_ini:totalventa, cuadre_total:totalventa, empresa})
+            await Caja.create({fecha_cuadre, usuario, conteo_ini:conteo, cuadre_ini:venta, cuadre_total:totalventa, empresa})
             const actualiza = await Reporte.update({estado:"CUADRE"},{where:{empresa, fecha_creacion:fecha_cuadre}});
             res.json(actualiza);
         }else if(cuadre_ini != 0 && cuadre_fin == 0){
             totalventa += parseFloat(cuadre_ini)
-            await Caja.update({conteo_fin:conteo, cuadre_fin:totalventa, cuadre_total:totalventa},{where:{empresa, fecha_cuadre}})
+            await Caja.update({conteo_fin:conteo, cuadre_fin:venta, cuadre_total:totalventa},{where:{empresa, fecha_cuadre}})
             const actualiza = await Reporte.update({estado:"CUADRE"},{where:{empresa, fecha_creacion:fecha_cuadre}});
             res.json(actualiza);
         }else if(cuadre_ini != 0 && cuadre_fin != 0){
-            await Caja.create({fecha_cuadre, conteo_ini:conteo, usuario, cuadre_ini:totalventa, cuadre_total:totalventa, empresa})
+            await Caja.create({fecha_cuadre, conteo_ini:conteo, usuario, cuadre_ini:venta, cuadre_total:totalventa, empresa})
             const actualiza = await Reporte.update({estado:"CUADRE"},{where:{empresa, fecha_creacion:fecha_cuadre}});
             res.json(actualiza);
         }
         // await Reporte.update({estado:"CUADRE"},{where:{empresa,fecha_creacion:fecha_cuadre}});
-        // return
     } catch (error) {
         console.log("ListarReporte", error)
     }
-    //     }else{
-    //         res.json(errorToken)
-    //     } 
-    // })
 }
 async function TotalMovimientos(empresa,fecha,estado){
     return new Promise((resolve, reject) => {
@@ -193,7 +188,6 @@ export async function SacarTotalesVentaFechas(req, res) {
 
 export async function CuadreIni(empresa, estado){
     return new Promise((resolve, reject) => {
-
         let sql = `SELECT cuadre_ini, cuadre_fin, cuadre_total FROM esq_reporte.caja  WHERE empresa = '${empresa}' AND estado = '${estado}' ORDER BY id DESC LIMIT 1`;
         db.query(sql,{type: sequelize.QueryTypes.SELECT}).then((response)=>{
             if(!empty(response)){
