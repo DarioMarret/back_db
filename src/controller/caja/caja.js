@@ -238,3 +238,25 @@ export async function IngresarMovimiento(req, res) {
         console.log("IngresarMovimiento",error)
     }
 }
+export async function ListarMovimiento(req, res) {
+    try {
+        const { empresa, estado } = req.query;
+        let sql = `SELECT * FROM esq_reporte.movimiento WHERE empresa = '${empresa}' AND estado = '${estado}' ORDER BY id DESC`
+        db.query(sql,{type: sequelize.QueryTypes.SELECT}).then((response)=>{
+            console.log("reporte",response);
+            if(!empty(response)){
+                res.json({
+                    success: true,
+                    data: response,
+                    msg:'reporte de movimientos',
+                })
+            }else{
+                res.json({msg: "no se encontro movimientos"})
+            }
+        }).catch((err)=>{
+            console.log("Error", err);
+        })
+    } catch (error) {
+        console.log("ListarReporte", error)
+    } 
+}
