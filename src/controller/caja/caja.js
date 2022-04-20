@@ -7,10 +7,32 @@ import { SacarTotalesVenta } from "../reporte/reporte";
 import Reporte from "../../model/Reporte/Reporte";
 import Movimiento from "../../model/Caja/Movimiento";
 
-export async function ListarCajaActual(req, res) {
+export async function ListarCajas(req, res) {
     try {
         const { empresa, fecha_ini, fecha_fin, estado } = req.body;
-        let sql = `SELECT * FROM esq_reporte.caja WHERE empresa = '${empresa}' AND estado = '${estado}' AND fecha_cuadre BETWEEN '${fecha_ini}' and '${fecha_fin}' ORDER BY id DESC LIMIT 1 `
+        let sql = `SELECT * FROM esq_reporte.caja WHERE empresa = '${empresa}' AND estado = '${estado}' AND fecha_cuadre BETWEEN '${fecha_ini}' and '${fecha_fin}' ORDER BY id DESC`
+        db.query(sql,{type: sequelize.QueryTypes.SELECT}).then((response)=>{
+            console.log("reporte",response);
+            if(!empty(response)){
+                res.json({
+                    success: true,
+                    data: response,
+                    msg:'reporte por fecha',
+                })
+            }else{
+                res.json({msg: "no se encontro reporte"})
+            }
+        }).catch((err)=>{
+            console.log("Error", err);
+        })
+    } catch (error) {
+        console.log("ListarReporte", error)
+    }
+}
+export async function ListarCajaActual(req, res) {
+    try {
+        const { empresa } = req.body;
+        let sql = `SELECT * FROM esq_reporte.caja WHERE empresa = '${empresa}' ORDER BY id DESC LIMIT 1 `
         db.query(sql,{type: sequelize.QueryTypes.SELECT}).then((response)=>{
             console.log("reporte",response);
             if(!empty(response)){

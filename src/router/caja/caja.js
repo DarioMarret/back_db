@@ -1,11 +1,11 @@
 import { Router } from 'express'
-import { CrearCuadreCaja, IngresarMovimiento, ListarCajaActual } from '../../controller/caja/caja'
+import { CrearCuadreCaja, IngresarMovimiento, ListarCajaActual, ListarCajas } from '../../controller/caja/caja'
 
 const routes = Router()
 
 routes.post('/listar_caja',ListarCajaActual)
 routes.post('/cuadre_caja', CrearCuadreCaja)
-// routes.post('/crearUsuario',CrearUsuario)
+routes.post('/listar_cajas',ListarCajas)
 
 
 //movimiento de caja
