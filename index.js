@@ -35,18 +35,18 @@ app.use("/v1",Reporte)
 app.use("/v1",Caja)
 
 
-const sslserver = https.createServer(
-  {
-    key: fs.readFileSync(
-      path.join(__dirname, "../../conf/bitnami/certs", "server.key")
-    ),
-    cert: fs.readFileSync(
-      path.join(__dirname, "../../conf/bitnami/certs", "server.crt")
-    ),
-  },
-  app
-);
+// const sslserver = https.createServer(
+//   {
+//     key: fs.readFileSync(
+//       path.join(__dirname, "../../conf/bitnami/certs", "server.key")
+//     ),
+//     cert: fs.readFileSync(
+//       path.join(__dirname, "../../conf/bitnami/certs", "server.crt")
+//     ),
+//   },
+//   app
+// );
 
-sslserver.listen(port, async() => {
+app.listen(port, async() => {
     console.log(`Server listening on ${port}`);
 });

@@ -15,29 +15,17 @@ const Caja = sequelize.define("caja",{
         type: Sequelize.STRING(160),
         allowNull:false,
     },
-    conteo_ini:{
+    conteo:{
         type: Sequelize.DECIMAL(10,2),
         defaultValue: 0.0
     },
-    cuadre_ini:{
-        type: Sequelize.DECIMAL(10,2),
-        defaultValue: 0.0
-    },
-    conteo_fin:{
-        type: Sequelize.DECIMAL(10,2),
-        defaultValue: 0.0
-    },
-    cuadre_fin:{
+    venta:{
         type: Sequelize.DECIMAL(10,2),
         defaultValue: 0.0
     },
     cuadre_total:{
         type: Sequelize.DECIMAL(10,2),
         defaultValue: 0.0
-    },
-    marca:{
-        type: Sequelize.STRING(100),
-        defaultValue: "0000000000"
     },
     empresa:{
         type: Sequelize.STRING(100),
