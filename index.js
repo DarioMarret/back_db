@@ -8,7 +8,7 @@ import fs from 'fs';
 
 import 'dotenv/config'
 import './src/database/conexion_sequelize'
-import './src/model/index'
+// import './src/model/index'
 
 import Login from './src/router/login/login'
 import Productos from './src/router/productos/productos'

@@ -33,7 +33,7 @@ export async function ListarProducto(req, res) {
 }
 export async function CrearProductounitario(req, res) {
     try {
-        const {id_categoria,producto, precio_venta, porcentaje_iva, empresa  } = req.body
+        const {id_categoria, producto, precio_venta, porcentaje_iva, empresa  } = req.body
         var ress = await VerificarProductoExistente(empresa, producto.toLowerCase())
         if (!ress) {
             Productos.create({
@@ -43,8 +43,8 @@ export async function CrearProductounitario(req, res) {
                 porcentaje_iva: porcentaje_iva,
                 empresa
             }).then((response) => {
-                count += 1
                 console.log(response);
+                res.json({success: true, data: response})
             }).catch((err) => {
                 console.log("error", err)
             });

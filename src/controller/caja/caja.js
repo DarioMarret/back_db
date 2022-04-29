@@ -76,6 +76,7 @@ export async function CrearCuadreCaja(req, res) {
         console.log("ListarReporte", error)
     }
 }
+
 async function TotalMovimientos(empresa,fecha,estado){
     return new Promise((resolve, reject) => {
         let sql = `SELECT sum(ingreso) AS ingreso, sum(salida) AS salida FROM esq_reporte.movimiento  WHERE empresa = '${empresa}' AND fecha = '${fecha}' AND estado = '${estado}'`;
@@ -219,6 +220,46 @@ export async function CuadreIni(empresa, estado){
     })
 }
 
+export async function ActualizaCaja(req, res){
+    try {
+        const { empresa, cantidad } = req.body
+        let sql = `SELECT * FROM esq_reporte.caja WHERE empresa = '${empresa}' ORDER BY id DESC LIMIT 1 `
+        db.query(sql,{type: sequelize.QueryTypes.SELECT}).then((response)=>{
+            console.log("reporte",response);
+            if(!empty(response)){
+                const respuesta = ActualizarCaja(response[0].id, cantidad)
+                res.json({
+                    success: true,
+                    data: respuesta,
+                    msg:'caja fue actualizada',
+                })
+            }else{
+                res.json({msg: "no se encontro caja"})
+            }
+        }).catch((err)=>{
+            console.log("Error", err);
+        })  
+    } catch (error) {
+        console.log(error)
+    }
+}
+async function ActualizarCaja(id, cantidad) {
+    try {
+        let sql = `UPDATE esq_reporte.caja SET cuadre_total = ${cantidad} WHERE id = '${id}'`
+        db.query(sql,{type: sequelize.QueryTypes.SELECT}).then((response)=>{
+            console.log("reporte",response);
+            if(!empty(response)){
+                return response
+            }else{
+                return({msg: "no se encontro caja"})
+            }
+        }).catch((err)=>{
+            console.log("Error", err);
+        })  
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 //movimiento de caja para 
 export async function IngresarMovimiento(req, res) {

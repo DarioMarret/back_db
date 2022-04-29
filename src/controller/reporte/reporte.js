@@ -4,8 +4,6 @@ import sequelize from "sequelize"
 import Reporte from "../../model/Reporte/Reporte";
 
 export async function ListarReporte(req, res) {
-    // jwt.verify(req.token, config.token, async (error, authData)=>{
-    //     if(!error){
     try {
         const { empresa, fecha_ini, fecha_fin } = req.body;
         let sql = `SELECT * FROM esq_reporte.reporte WHERE empresa = '${empresa}' AND fecha_creacion BETWEEN '${fecha_ini}' and '${fecha_fin}' ORDER BY fecha_creacion`
@@ -26,10 +24,6 @@ export async function ListarReporte(req, res) {
     } catch (error) {
         console.log("ListarReporte", error)
     }
-    //     }else{
-    //         res.json(errorToken)
-    //     } 
-    // })
 }
 export async function ListarReporteActual(req, res) {
     // jwt.verify(req.token, config.token, async (error, authData)=>{
