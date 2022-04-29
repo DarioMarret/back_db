@@ -26,11 +26,10 @@ export async function ListarReporte(req, res) {
     }
 }
 export async function ListarReporteActual(req, res) {
-    // jwt.verify(req.token, config.token, async (error, authData)=>{
-    //     if(!error){
     try {
         const { empresa, fecha } = req.query
-        let sql = `SELECT secuencia, fecha_creacion, empresa, sum(precio_venta * cantidad) AS total, estado, forma_pago FROM esq_reporte.reporte  WHERE empresa = '${empresa}' AND fecha_creacion = '${fecha}' GROUP BY secuencia, empresa, fecha_creacion, estado, forma_pago`;
+        let estado = "CUADRE"
+        let sql = `SELECT secuencia, fecha_creacion, empresa, sum(precio_venta * cantidad) AS total, estado, forma_pago FROM esq_reporte.reporte  WHERE empresa = '${empresa}' AND fecha_creacion = '${fecha}' AND estado != '${estado}' GROUP BY secuencia, empresa, fecha_creacion, estado, forma_pago`;
         db.query(sql,{type: sequelize.QueryTypes.SELECT}).then((response)=>{
             console.log("reporte",response);
             if(!empty(response)){
@@ -48,10 +47,6 @@ export async function ListarReporteActual(req, res) {
     } catch (error) {
         console.log("ListarReporte", error)
     }
-    //     }else{
-    //         res.json(errorToken)
-    //     } 
-    // })
 }
 export async function CrearVenta(req, res) {
     const { empresa, tienda, secuencial, fecha } = req.body;
