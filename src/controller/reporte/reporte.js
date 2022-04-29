@@ -149,7 +149,8 @@ export async function SacarTotalesVentaFechas(req, res) {
 export async function SacarTotalesVenta(empresa, fecha_ini, fecha_fin, estado) {
     try {
         return new Promise(function (resolve, reject) {
-            let sql = `SELECT SUM(precio_venta * cantidad) AS total_venta FROM esq_reporte.reporte WHERE empresa = '${empresa}' AND estado = '${estado}' AND fecha_creacion BETWEEN '${fecha_ini}' AND '${fecha_fin}'`
+            let forma_pago = 'EFECTIVO'
+            let sql = `SELECT SUM(precio_venta * cantidad) AS total_venta FROM esq_reporte.reporte WHERE empresa = '${empresa}' AND forma_pago = '${forma_pago}' AND estado = '${estado}' AND fecha_creacion BETWEEN '${fecha_ini}' AND '${fecha_fin}'`
             db.query(sql,{type: sequelize.QueryTypes.SELECT}).then((response)=>{
                 if(!empty(response)){
                     console.log("SacarTotalesVentaFechas",response[0]);
